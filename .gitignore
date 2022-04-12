@@ -1,0 +1,9 @@
+venv
+__pycache__
+.idea
+footage
+raster
+sound
+temp_storage
+vector
+
