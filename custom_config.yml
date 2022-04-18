@@ -1,6 +1,9 @@
 break_into_partial_movies: false
 camera_qualities:
   default_quality: high
+  mobile:
+    frame_rate: 60
+    resolution: 1080x1080
   high:
     frame_rate: 60
     resolution: 1920x1080
@@ -23,6 +26,7 @@ directories:
 full_screen: false
 style:
   background_color: '#ecf0f1'
+#  background_color: '#000'
   font: Consolas
 tex:
   executable: latex
