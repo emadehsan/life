@@ -1,4 +1,4 @@
-
+import manimlib
 from manimlib import *
 
 import sys
@@ -33,26 +33,70 @@ class AppLife(Scene):
         # ANIMATIONS:
 
         # 1. display moving glider
-        # life.put_glider_at(25, 25)
-        # self.animate_grid(grid, life, num_generations=15, wait_time=0.005)
+        self.glider(grid, life, num_generations=30, wait_time=0.1)
 
         # 2. show intro
-        # self.show_intro()
+        self.show_title_n_body(
+            title="Game of Life",
+            body="Conway's Game of Life is a zero player game with a few simple rules",
+            wait_time=2.5,
+        )
 
         # 3. show rules
         # self.clear_screen(grid, life)
         self.show_rules(grid, life)
 
         # 4. show post rules message
-        # self.clear_screen(grid, life)
-        # self.show_text("These very simple rules often turn into very complex patterns", font_size=BODY_FONT_SIZE)
+        self.clear_screen(grid, life)
+        self.show_text("These rules turn simple starting patterns into complex ones.\n"
+                       "Some completely vanish and some keep progressing forever", font_size=BODY_FONT_SIZE, wait_time=2.5)
 
         # 5. R. Pentomino
-        # self.clear_screen(grid, life)
-        self.show_text("R Pentomino", font_size=TITLE_FONT_SIZE)
-        self.r_pentomino(grid, life, num_generations=1200)
+        self.clear_screen(grid, life)
+        self.show_text("R Pentomino", font_size=TITLE_FONT_SIZE, wait_time=1)
+        # to show R-pentomino starting position
+        self.r_pentomino(grid, life, num_generations=1, wait_time=1)
+        self.wait(0.5)
+        # to actually animate r pentomino
+        self.r_pentomino(grid, life, num_generations=70)
 
-        # tip: Google: Game of Life to see easter egg?
+        # 6. show message about interesting patterns
+        # self.clear_screen(grid, life)
+        # self.show_text("Some interesting patterns:", font_size=BODY_FONT_SIZE)
+
+        # 7. Still Life
+        self.clear_screen(grid, life)
+        self.show_title_n_body("Still Life",
+                               "Patterns that do not change in subsequent generations")
+        self.still_life(grid, life, num_generations=15)
+
+        # 8. Oscillators
+        self.clear_screen(grid, life)
+        self.show_title_n_body("Oscillators", "Come back to initial state after a few generations")
+        self.oscillators(grid, life, num_generations=25, wait_time=0.3)
+
+        # 9. Glider
+        self.clear_screen(grid, life)
+        self.show_title_n_body("Gosper Glider Gun", "Emits a Glider at every 30th generation (discovered in 1970)")
+        self.glider_gun(grid, life, num_generations=1, wait_time=1)
+        self.wait(0.5)
+        self.glider_gun(grid, life, num_generations=90, wait_time=0.05)
+
+        # 10. Copperhead
+        self.clear_screen(grid, life)
+        self.show_title_n_body("Copperhead", "Spaceship (discovered in 2016)")
+        self.copperhead(grid, life, num_generations=1, wait_time=1)
+        self.wait(0.5)
+        self.copperhead(grid, life, num_generations=100, wait_time=0.1)
+
+        # # 11. Google it
+        # self.clear_screen(grid, life)
+        # self.show_text("If you Google 'Game of Life', it is a nice easter egg",
+        #                font_size=TITLE_FONT_SIZE)
+
+        # 11. Predictability
+        self.clear_screen(grid, life)
+        self.show_question()
 
         # self.embed()
 
@@ -76,6 +120,9 @@ class AppLife(Scene):
     def animate_grid(self, grid, life, num_generations, wait_time=0.1):
         # the first iteration of loop plots the initial state of board
         # second iteration displays the one next generation
+
+        # self.put_counter(wait_time)
+
         generation = 1
         while generation <= num_generations:
             self.wait(wait_time)
@@ -99,27 +146,41 @@ class AppLife(Scene):
             life.compute_next_state()
             generation += 1
 
-            self.put_counter(count=generation)
-
-    def show_intro(self, wait_time=1.5):
-        title = Text("Game of Life", font_size=TITLE_FONT_SIZE, font=FONT_FAMILY)
-        body = Text("Conway's Game of Life is a zero player game with a few simple rules",
-                     font_size=BODY_FONT_SIZE, font=FONT_FAMILY)
+    def show_title_n_body(self, title, body, wait_time=2.5):
+        title = Text(title, font_size=TITLE_FONT_SIZE, font=FONT_FAMILY)
+        body = Text(body, font_size=BODY_FONT_SIZE, font=FONT_FAMILY)
         vgroup = VGroup(title, body).arrange(DOWN, buff=TITLE_BODY_BUFFER, center=False, aligned_edge=LEFT) #.set_y(0)
         vgroup.to_edge(UP)
         vgroup.to_edge(LEFT)
-        # self.play(Write(vgroup))
         self.play(FadeIn(vgroup))
         self.wait(wait_time)
 
-    def show_text(self, text_str, font_size, wait_time=1.5):
+    def show_text(self, text_str, font_size, wait_time=2.5):
         text = Text(text_str, font_size=font_size, font=FONT_FAMILY)
         text.to_edge(UP)
         text.to_edge(LEFT)
-        self.play(Write(text))
-        # self.wait(wait_time)
+        self.play(FadeIn(text))
+        self.wait(wait_time)
 
-    def show_rules(self, grid, life, wait_time=2):
+    def show_question(self, wait_time=3):
+        text = Text(
+            "Q: Given a state of the board, is it possible to tell whether\n"
+            "a certain pattern will vanish or live forever?",
+                    font_size=BODY_FONT_SIZE, font=FONT_FAMILY)
+        text.to_edge(UP)
+        text.to_edge(LEFT)
+
+        credits_text = Text("code: github.com/emadehsan/life",
+                            font_size=BODY_FONT_SIZE, font=FONT_FAMILY)
+        credits_text.to_edge(BOTTOM)
+        text.to_edge(LEFT)
+
+        self.play(FadeIn(text))
+        self.wait(wait_time)
+        self.play(FadeIn(credits_text))
+        self.wait(wait_time)
+
+    def show_rules(self, grid, life, wait_time=1.5):
         rules = [
             {
                 "title": "Underpopulation",
@@ -162,9 +223,6 @@ class AppLife(Scene):
             # make the board and grid empty and clear texts etc
             self.clear_screen(grid, life)
 
-            # show this rule's animation
-            self.display_rule_example(grid, life, board_state_functions[i], flash_indexes[i])
-
             # display this rule's text
             title = Text(rule['title'], font_size=TITLE_FONT_SIZE, font=FONT_FAMILY)
             body = Text(rule['body'], font_size=BODY_FONT_SIZE, font=FONT_FAMILY)
@@ -173,10 +231,11 @@ class AppLife(Scene):
             vgroup = VGroup(title, body).arrange(DOWN, buff=TITLE_BODY_BUFFER, center=False, aligned_edge=LEFT)
             vgroup.to_edge(UP)
             vgroup.to_edge(LEFT)
-            self.play(Write(vgroup))
-            # self.play(Write(title))
-            # self.play(Write(body))
-            # self.play(Write(body2))
+            self.play(FadeIn(vgroup))
+
+            # show this rule's animation
+            self.display_rule_example(grid, life, board_state_functions[i], flash_indexes[i])
+
             self.wait(wait_time)
 
     def clear_screen(self, grid, life):
@@ -191,6 +250,18 @@ class AppLife(Scene):
 
         # adds the background grid again (which is all gray cells, now)
         self.add(grid)
+
+    def glider(self, grid, life, num_generations, wait_time=0.1):
+        life.clear_board()
+        life.put_glider_at(life.num_rows//3, life.num_cols//3)
+
+        self.animate_grid(grid, life, num_generations, wait_time)
+
+    def glider_gun(self, grid, life, num_generations, wait_time=0.1):
+        life.clear_board()
+        life.put_glider_gun(life.num_rows//2 - 5, life.num_cols//5)
+
+        self.animate_grid(grid, life, num_generations, wait_time)
 
     def display_rule_example(self, grid, life: Life, set_board_state_func, flash_index, wait_time=1) -> None:
         # put example in the center. the examples chosen to highlight each rule
@@ -226,16 +297,37 @@ class AppLife(Scene):
 
         self.animate_grid(grid, life, num_generations, wait_time)
 
-    def put_counter(self, count: int=1) -> Text:
-        return
-        # global counter_text
-        # if counter_text:
-        #     counter_text.text = f"Generation: {count}"
-        #     # print("UPDATE previous")
-        #     counter_text.remove()
-        # # else:
-        # print("Add New")
-        # counter_text = Text(f"Generation: {count}")
-        # counter_text.to_edge(UP)
-        # counter_text.to_edge(RIGHT)
-        # self.add(counter_text)
+    def put_counter(self, wait_time):
+        # CountInFrom()
+
+        # counts the generation
+        counter = DecimalNumber(1)#, text_config={"font": "monospace"})  #.scale(2)
+        # ChangingDecimal()
+
+        def update_func(t):
+            return t *10
+
+        counter.to_edge(UP)
+        counter.to_edge(RIGHT)
+        # counter.
+        # ChangingDecimal()
+        # self.add(counter)
+        self.play(ChangingDecimal(counter, update_func), run_time=wait_time)
+
+    def still_life(self, grid, life, num_generations, wait_time=0.2):
+        life.clear_board()
+        life.put_still_life()
+
+        self.animate_grid(grid, life, num_generations, wait_time)
+
+    def oscillators(self, grid, life, num_generations, wait_time=0.2):
+        life.clear_board()
+        life.put_oscillators()
+
+        self.animate_grid(grid, life, num_generations, wait_time)
+
+    def copperhead(self, grid, life, num_generations, wait_time=0.2):
+        life.clear_board()
+        life.put_copperhead(life.num_rows//2 - 4, life.num_cols//2 - 6)
+
+        self.animate_grid(grid, life, num_generations, wait_time)

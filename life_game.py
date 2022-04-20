@@ -168,9 +168,198 @@ class Life:
             AsciiToBoard.read_board_state()
         )
 
+    def put_still_life(self):
+        # block
+        block = [
+            (0, 0),
+            (0, 1),
+            (1, 0),
+            (1, 1)
+        ]
+
+        beeHive = [
+            (0, 1),
+            (0, 2),
+            (1, 0),
+            (1, 3),
+            (2, 1),
+            (2, 2)
+        ]
+
+        loaf = [
+            (0, 1),
+            (0, 2),
+            (1, 0),
+            (1, 3),
+            (2, 1),
+            (2, 3),
+            (3, 2)
+        ]
+
+        boat = [
+            (0, 0),
+            (0, 1),
+            (1, 0),
+            (1, 2),
+            (2, 1)
+        ]
+
+        tub = [
+            (0, 1),
+            (1, 0),
+            (1, 2),
+            (2, 1)
+        ]
+        shapes = [block, beeHive, loaf, boat, tub]
+
+        # divide the board width into 6 parts
+        # 6 parts contain 5 mid points. we'll place each shape at one of those points
+        part_j = self.num_cols // (len(shapes) + 1)
+        part_i = self.num_rows // 2  # center vertical
+
+        for idx, shape in enumerate(shapes):
+            self._make_live(shape, i=part_i, j=part_j*(idx+1))
+
+    def put_oscillators(self):
+        # period 2
+        blinker = [
+            (0, 0),
+            (0, 1),
+            (0, 2)
+        ]
+
+        # period 2
+        toad = [
+            (0, 1),
+            (0, 2),
+            (0, 3),
+            (1, 0),
+            (1, 1),
+            (1, 2)
+        ]
+
+        # period 2
+        beacon = [
+            (0, 0),
+            (0, 1),
+            (1, 0),
+            (1, 1),
+            (2, 2),
+            (2, 3),
+            (3, 2),
+            (3, 3)
+        ]
+
+        penta_decathlon = [
+            (0, 1),
+            (1, 1),
+            (2, 0),
+            (2, 2),
+            (3, 1),
+            (4, 1),
+            (5, 1),
+            (6, 1),
+            (7, 0),
+            (7, 2),
+            (8, 1),
+            (9, 1)
+        ]
+
+        shapes = [blinker, toad, beacon, penta_decathlon]
+
+        i = self.num_rows // 2  # center vertical
+        j = self.num_cols // (len(shapes) + 1)
+
+        for idx, shape in enumerate(shapes):
+            next_i = i - len(shape)//3  # adjust the height
+            next_j = j * (idx + 1)
+            self._make_live(shape, i=next_i, j=next_j)
+
+    def put_copperhead(self, i, j):
+        cells = [
+            (0, 5),
+            (0, 7),
+            (0, 8),
+            (1, 4),
+            (1, 11),
+
+            (2, 3),
+            (2, 4),
+            (2, 8),
+            (2, 11),
+
+            (3, 0),
+            (3, 1),
+            (3, 3),
+            (3, 9),
+            (3, 10),
+            (4, 0),
+            (4, 1),
+            (4, 3),
+            (4, 9),
+            (4, 10),
+
+            (5, 3),
+            (5, 4),
+            (5, 8),
+            (5, 11),
+
+            (6, 4),
+            (6, 11),
+
+            (7, 5),
+            (7, 7),
+            (7, 8)
+        ]
+        self._make_live(cells, i, j)
+
+    def put_glider_gun(self, i, j):
+        cells = [
+            (4, 0),
+            (5, 0),
+            (4, 1),
+            (5, 1),
+
+            (4, 10),
+            (5, 10),
+            (6, 10),
+            (3, 11),
+            (7, 11),
+            (2, 12),
+            (8, 12),
+            (2, 13),
+            (8, 13),
+            (5, 14),
+            (3, 15),
+            (7, 15),
+            (4, 16),
+            (5, 16),
+            (6, 16),
+            (5, 17),
+
+            (2, 20),
+            (3, 20),
+            (4, 20),
+            (2, 21),
+            (3, 21),
+            (4, 21),
+            (1, 22),
+            (5, 22),
+
+            (0, 24),
+            (1, 24),
+            (5, 24),
+            (6, 24),
+
+            (2, 34),
+            (3, 34),
+            (2, 35),
+            (3, 35)
+        ]
+
+        self._make_live(cells, i, j)
 
 if __name__ == '__main__':
-
     board = [[0, 1, 0], [0, 0, 1], [1, 1, 1], [0, 0, 0]]
     # next = [[0,0,0],[1,0,1],[0,1,1],[0,1,0]]
 
