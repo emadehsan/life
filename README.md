@@ -1,4 +1,8 @@
 # Game of Life
+
+
+[![YouTube video thumbnail](https://img.youtube.com/vi/qcbwzWlltNc/0.jpg)](https://www.youtube.com/watch?v=qcbwzWlltNc)
+
 This code simulates Conway's Game of Life into a video 
 using [manim](https://github.com/3b1b/manim/).
 
